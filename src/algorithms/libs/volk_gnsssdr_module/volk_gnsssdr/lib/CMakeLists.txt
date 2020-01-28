@@ -68,6 +68,9 @@ if(COMPILER_NAME MATCHES "GNU")
     endif()
 endif()
 
+if(HAVE_POSIX_MEMALIGN)
+    add_definitions(-DHAVE_POSIX_MEMALIGN)
+endif(HAVE_POSIX_MEMALIGN)
 
 ########################################################################
 # detect x86 flavor of CPU

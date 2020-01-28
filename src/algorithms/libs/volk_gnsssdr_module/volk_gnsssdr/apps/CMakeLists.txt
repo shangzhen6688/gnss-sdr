@@ -35,6 +35,9 @@ if(UNIX)
     )
 endif()
 
+if(HAVE_POSIX_MEMALIGN)
+    add_definitions(-DHAVE_POSIX_MEMALIGN)
+endif(HAVE_POSIX_MEMALIGN)
 
 # MAKE volk_gnsssdr_profile
 add_executable(volk_gnsssdr_profile

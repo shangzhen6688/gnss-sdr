@@ -87,8 +87,10 @@ if((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") AND NOT WIN32)
     if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6.1.1")
         if(CMAKE_VERSION VERSION_LESS "3.1")
             set(MY_CXX_FLAGS "${MY_CXX_FLAGS} -std=c++11")
+            set(MY_CXX_FLAGS "${MY_C_FLAGS} -std=c11")
         else()
             set(CMAKE_CXX_STANDARD 11)
+            set(CMAKE_C_STANDARD 11)
         endif()
     else()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "8.0.0")
@@ -105,6 +107,7 @@ if((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") AND NOT WIN32)
                 set(CMAKE_CXX_STANDARD 14)
             endif()
         endif()
+        set(CMAKE_C_STANDARD 11)
     endif()
     set(MY_CXX_FLAGS "${MY_CXX_FLAGS} -Wall -Wextra")  # Add warning flags: For "-Wall" see http://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
 endif()
@@ -126,12 +129,15 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
                 endif()
             endif()
         endif()
+        set(CMAKE_C_STANDARD 11)
     else()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "3.5.0")
             if(CMAKE_VERSION VERSION_LESS "3.1")
                 set(MY_CXX_FLAGS "${MY_CXX_FLAGS} -std=c++11")
+                set(MY_CXX_FLAGS "${MY_C_FLAGS} -std=c11")
             else()
                 set(CMAKE_CXX_STANDARD 11)
+                set(CMAKE_C_STANDARD 11)
             endif()
         else()
             if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "6.0.0")
@@ -148,6 +154,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
                     set(CMAKE_CXX_STANDARD 14)
                 endif()
             endif()
+            set(CMAKE_C_STANDARD 11)
         endif()
     endif()
 endif()
@@ -160,7 +167,7 @@ if(NOT ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU") AND NOT WIN32) AND NOT (CMAKE_CXX
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MY_CXX_FLAGS} -Wall")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MY_C_FLAGS} -Wall")
 
 option(ENABLE_STRIP "Create a stripped volk_gnsssdr_profile binary (without shared libraries)" OFF)
 if(ENABLE_STRIP)
@@ -213,6 +220,13 @@ if(UNIX)
         -D_FORTIFY_SOURCE=2
     )
 endif()
+
+########################################################################
+# check for posix_memalign
+########################################################################
+
+include(CheckSymbolExists)
+check_symbol_exists(posix_memalign stdlib.h HAVE_POSIX_MEMALIGN)
 
 
 ########################################################################

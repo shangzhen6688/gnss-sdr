@@ -42,7 +42,8 @@
  * We must work around this problem because MSVC is non-compliant!
  */
 
- 
+#if (__STDC_VERSION__ >= 200112L) && !__APPLE__
+
 void *volk_gnsssdr_malloc(size_t size, size_t alignment)
 {
 #if defined(_MSC_VER)
@@ -66,3 +67,88 @@ void volk_gnsssdr_free(void *ptr)
     free(ptr);
 #endif
 }
+
+
+#else
+
+#if HAVE_POSIX_MEMALIGN
+
+void *volk_gnsssdr_malloc(size_t size, size_t alignment)
+{
+    void *ptr;
+
+    // quoting posix_memalign() man page:
+    // "alignment must be a power of two and a multiple of sizeof(void *)"
+    // volk_gnsssdr_get_alignment() could return 1 for some machines (e.g. generic_orc)
+    if (alignment == 1)
+        {
+            return malloc(size);
+        }
+
+    int err = posix_memalign(&ptr, alignment, size);
+    if (err == 0)
+        {
+            return ptr;
+        }
+    else
+        {
+            fprintf(stderr,
+                "VOLK_GNSSSDR: Error allocating memory "
+                "(posix_memalign: error %d: %s)\n",
+                err, strerror(err));
+            return NULL;
+        }
+}
+
+
+void volk_gnsssdr_free(void *ptr)
+{
+    free(ptr);
+}
+
+#else
+
+// No standard handlers; we'll do it ourselves.
+struct block_info
+{
+    void *real;
+};
+
+void *volk_gnsssdr_malloc(size_t size, size_t alignment)
+{
+    void *real, *user;
+    struct block_info *info;
+
+    /* At least align to sizeof our struct */
+    if (alignment < sizeof(struct block_info))
+        alignment = sizeof(struct block_info);
+
+    /* Alloc */
+    real = malloc(size + (2 * alignment - 1));
+
+    /* Get pointer to the various zones */
+    user = (void *)((((uintptr_t)real) + sizeof(struct block_info) + alignment - 1) & ~(alignment - 1));
+    info = (struct block_info *)(((uintptr_t)user) - sizeof(struct block_info));
+
+    /* Store the info for the free */
+    info->real = real;
+
+    /* Return pointer to user */
+    return user;
+}
+
+
+void volk_gnsssdr_free(void *ptr)
+{
+    struct block_info *info;
+
+    /* Get the real pointer */
+    info = (struct block_info *)(((uintptr_t)ptr) - sizeof(struct block_info));
+
+    /* Release real pointer */
+    free(info->real);
+}
+
+#endif /* HAVE_POSIX_MEMALIGN */
+
+#endif /* _POSIX_C_SOURCE >= 200112L && !__APPLE__ */
