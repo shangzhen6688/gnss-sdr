@@ -151,4 +151,4 @@ void volk_gnsssdr_free(void *ptr)
 
 #endif /* HAVE_POSIX_MEMALIGN */
 
-#endif /* _POSIX_C_SOURCE >= 200112L && !__APPLE__ */
+#endif /* (__STDC_VERSION__ >= 200112L) && !__APPLE__ */
