@@ -1,7 +1,7 @@
 [![](./docs/doxygen/images/gnss-sdr_logo.png)](https://gnss-sdr.org "GNSS-SDR website")
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-![Code format CI](https://github.com/gnss-sdr/gnss-sdr/workflows/Code%20linting/badge.svg)
+[![Code format CI](https://github.com/carlesfernandez/gnss-sdr/workflows/Code%20linting/badge.svg)](https://github.com/carlesfernandez/gnss-sdr/actions)
 
 [comment]: # (
 SPDX-License-Identifier: GPL-3.0-or-later
