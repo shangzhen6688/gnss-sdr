@@ -22,7 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: install-dependencies
-      run: brew install llvm pkg-config hdf5 armadillo lapack gflags glog gnuradio libmatio log4cpp pugixml protobuf && ln -s /usr/local/opt/llvm/bin/clang-tidy /usr/local/bin && ln -s /usr/local/Cellar/llvm/9.*/bin/clang-apply-replacements /usr/local/bin && cp /usr/local/Cellar/llvm/9.*/share/clang/run-clang-tidy.py /usr/local/bin && pip3 install mako && pip3 install six
+      run: brew install llvm pkg-config hdf5 armadillo lapack gflags glog gnuradio libmatio log4cpp pugixml protobuf && ln -s /usr/local/opt/llvm/bin/clang-tidy /usr/local/bin && ln -s /usr/local/Cellar/llvm/9.*/bin/clang-apply-replacements /usr/local/bin && ln -s /usr/local/Cellar/llvm/9.*/share/clang/run-clang-tidy.py /usr/local/bin && pip3 install mako && pip3 install six
     - name: Prepare run
       run: cd build && cmake -DENABLE_FPGA=ON .. && make volk_gnsssdr_module gtest-1.10.0 core_monitor pvt_libs gpstk-2.12
     - name: run clang-tidy
